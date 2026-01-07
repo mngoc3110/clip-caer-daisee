@@ -16,18 +16,26 @@ import random
 class VideoRecord(object):
     def __init__(self, row):
         self._data = row
+        # Add a check to ensure the row has the correct number of elements
+        if len(self._data) < 3:
+            # Join the row back together to print the problematic line
+            problematic_line = " ".join(row)
+            raise IndexError(f"Error parsing line in annotation file. Line has {len(self._data)} elements, expected at least 3. Problematic line: '{problematic_line}'")
 
     @property
     def path(self): # 路径
-        return self._data[0]
+        # The path is everything except the last two elements
+        return " ".join(self._data[:-2])
 
     @property       # 帧数
     def num_frames(self):
-        return int(self._data[1])
+        # The frame count is the second to last element
+        return int(self._data[-2])
 
     @property       # 标签
     def label(self):
-        return int(self._data[2])
+        # The label is the last element
+        return int(self._data[-1])
 
 class VideoDataset(data.Dataset):
     def __init__(self, list_file, num_segments, duration, mode, transform, image_size,bounding_box_face,bounding_box_body):
