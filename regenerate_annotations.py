@@ -18,7 +18,7 @@ SETS = {
 # --- SCRIPT LOGIC ---
 
 def regenerate_annotations():
-    print("Starting annotation regeneration process (v4)...")
+    print("Starting annotation regeneration process (v5)...")
 
     for set_name, set_info in SETS.items():
         csv_path = os.path.join(LABELS_DIR, set_info['csv'])
@@ -40,8 +40,9 @@ def regenerate_annotations():
                     clip_id = str(row['ClipID'])
                     label = int(row['Engagement'])
                     
-                    # UPDATED v4: Use simplified, correct path structure
-                    video_dir_path = os.path.join(DATASET_DIR, set_info['dir'], clip_id)
+                    # UPDATED v5: Correct path structure - remove 'frames' subdirectory
+                    intermediate_dir = clip_id[:6] # First 6 digits of ClipID
+                    video_dir_path = os.path.join(DATASET_DIR, set_info['dir'], intermediate_dir, clip_id)
 
                     if os.path.isdir(video_dir_path):
                         frames = glob.glob(os.path.join(video_dir_path, '*.*')) # Use *.* to be safe
