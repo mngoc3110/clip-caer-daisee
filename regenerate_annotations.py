@@ -4,20 +4,15 @@ import pandas as pd
 from tqdm import tqdm
 
 # --- CONFIGURATION ---
-# Base path for the DAiSEE dataset in your Google Drive
-BASE_PATH = '/content/drive/MyDrive/khoaluan/Dataset/DAiSEE'
-# Directory containing the video frame folders (e.g., '1100031002', etc.)
+BASE_PATH = '/content/drive/MyDrive/khoaluan/dataset/DAiSEE'
 DATASET_DIR = os.path.join(BASE_PATH, 'DataSet')
-# Directory where the original CSV label files are
 LABELS_DIR = os.path.join(BASE_PATH, 'Labels')
-# Directory where the new .txt annotation files will be saved
 OUTPUT_DIR = BASE_PATH
 
-# Define the sets to process
 SETS = {
-    'train': 'TrainLabels.csv',
-    'val': 'ValidationLabels.csv',
-    'test': 'TestLabels.csv'
+    'train': {'csv': 'TrainLabels.csv', 'dir': 'Train'},
+    'val': {'csv': 'ValidationLabels.csv', 'dir': 'Validation'},
+    'test': {'csv': 'TestLabels.csv', 'dir': 'Test'}
 }
 
 # --- SCRIPT LOGIC ---
@@ -27,15 +22,15 @@ def regenerate_annotations():
     Reads original DAiSEE CSV files, counts actual frames on disk,
     and generates new .txt annotation files in the required format.
     """
-    print("Starting annotation regeneration process...")
+    print("Starting annotation regeneration process (v2)...")
 
     if not os.path.isdir(DATASET_DIR):
-        print(f"ERROR: Video frames directory not found at: {DATASET_DIR}")
+        print(f"ERROR: Base video directory not found at: {DATASET_DIR}")
         print("Please make sure the DATASET_DIR path is correct.")
         return
 
-    for set_name, csv_filename in SETS.items():
-        csv_path = os.path.join(LABELS_DIR, csv_filename)
+    for set_name, set_info in SETS.items():
+        csv_path = os.path.join(LABELS_DIR, set_info['csv'])
         output_txt_filename = f"daisee_{set_name}.txt"
         output_txt_path = os.path.join(OUTPUT_DIR, output_txt_filename)
 
@@ -61,7 +56,8 @@ def regenerate_annotations():
                     # We use the 'Engagement' column for the label
                     label = int(row['Engagement'])
                     
-                    video_dir_path = os.path.join(DATASET_DIR, clip_id)
+                    # UPDATED: Include the Train/Test/Validation subdirectory in the path
+                    video_dir_path = os.path.join(DATASET_DIR, set_info['dir'], clip_id)
 
                     if os.path.isdir(video_dir_path):
                         # Count all .jpg and .png files
