@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 # --- CONFIGURATION ---
 # Base path for the DAiSEE dataset in your Google Drive
-BASE_PATH = '/content/drive/MyDrive/khoaluan/dataset/DAiSEE'
+BASE_PATH = '/content/drive/MyDrive/khoaluan/Dataset/DAiSEE'
 # Directory containing the video frame folders (e.g., '1100031002', etc.)
 DATASET_DIR = os.path.join(BASE_PATH, 'DataSet')
 # Directory where the original CSV label files are
