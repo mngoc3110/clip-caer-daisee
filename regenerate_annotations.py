@@ -18,16 +18,7 @@ SETS = {
 # --- SCRIPT LOGIC ---
 
 def regenerate_annotations():
-    """
-    Reads original DAiSEE CSV files, counts actual frames on disk,
-    and generates new .txt annotation files in the required format.
-    """
-    print("Starting annotation regeneration process (v3)...")
-
-    if not os.path.isdir(DATASET_DIR):
-        print(f"ERROR: Base video directory not found at: {DATASET_DIR}")
-        print("Please make sure the DATASET_DIR path is correct.")
-        return
+    print("Starting annotation regeneration process (v4)...")
 
     for set_name, set_info in SETS.items():
         csv_path = os.path.join(LABELS_DIR, set_info['csv'])
@@ -40,50 +31,28 @@ def regenerate_annotations():
             print(f"  - WARNING: CSV file not found, skipping: {csv_path}")
             continue
 
-        try:
-            df = pd.read_csv(csv_path)
-        except Exception as e:
-            print(f"  - ERROR: Could not read CSV file. Error: {e}")
-            continue
-
+        df = pd.read_csv(csv_path)
         print(f"  - Found {len(df)} records. Generating {output_txt_filename}...")
 
         with open(output_txt_path, 'w') as txt_file:
-            # Using tqdm for a progress bar
             for _, row in tqdm(df.iterrows(), total=df.shape[0], desc=f"  - {set_name}"):
                 try:
                     clip_id = str(row['ClipID'])
-                    # We use the 'Engagement' column for the label
                     label = int(row['Engagement'])
                     
-                    # UPDATED v3: Handle complex nested directory structure
-                    intermediate_dir = clip_id[:6] # First 6 digits of ClipID
-                    video_dir_path = os.path.join(DATASET_DIR, set_info['dir'], intermediate_dir, clip_id, 'frames')
+                    # UPDATED v4: Use simplified, correct path structure
+                    video_dir_path = os.path.join(DATASET_DIR, set_info['dir'], clip_id)
 
                     if os.path.isdir(video_dir_path):
-                        # Count all .jpg and .png files
-                        frames = glob.glob(os.path.join(video_dir_path, '*.jpg'))
-                        frames.extend(glob.glob(os.path.join(video_dir_path, '*.png')))
+                        frames = glob.glob(os.path.join(video_dir_path, '*.*')) # Use *.* to be safe
                         frame_count = len(frames)
 
                         if frame_count > 0:
-                            # Write the line in the format: <path_to_video_dir> <frame_count> <label>
                             txt_file.write(f"{video_dir_path} {frame_count} {label}\n")
-                        else:
-                            # This directory exists but is empty
-                            # print(f"\n  - Warning: No frames found in {video_dir_path}, skipping.")
-                            pass
-                    else:
-                        # The directory for this ClipID does not exist
-                        # print(f"\n  - Warning: Directory not found for ClipID {clip_id}, skipping.")
-                        pass
 
                 except KeyError as ke:
-                    print(f"\n  - FATAL ERROR: Column not found in CSV: {ke}. Please check the column names.")
-                    print("  - Aborting process.")
+                    print(f"\n  - FATAL ERROR: Column not found in CSV: {ke}.")
                     return
-                except Exception as e:
-                    print(f"\n  - ERROR processing row {row}: {e}")
 
         print(f"  - Successfully created {output_txt_path}")
 
