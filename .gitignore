@@ -1,0 +1,98 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ======================
+# Virtual Environment
+# ======================
+venv/
+.env/
+.env.*
+.venv/
+conda/
+miniconda/
+
+# ======================
+# Jupyter / Colab
+# ======================
+.ipynb_checkpoints/
+*.ipynb
+!.ipynb_checkpoints/
+
+# ======================
+# PyTorch / ML
+# ======================
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.tflite
+
+# ======================
+# Training outputs
+# ======================
+outputs/
+logs/
+runs/
+checkpoints/
+wandb/
+tensorboard/
+
+# ======================
+# Dataset (IMPORTANT)
+# ======================
+data/
+dataset/
+datasets/
+RAER/
+DAiSEE/
+DAiSEE_data/
+*.zip
+*.tar
+*.tar.gz
+
+# ======================
+# Kaggle / Colab cache
+# ======================
+.kaggle/
+kaggle.json
+.cache/
+.cache/*
+/root/.cache/
+
+# ======================
+# CLIP / pretrained weights
+# ======================
+*.npz
+*.npy
+*.bin
+*.pkl
+
+# ======================
+# OS
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# IDE
+# ======================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ======================
+# Logs
+# ======================
+*.log
+*.out

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+python main.py \
+    --mode train \
+    --exper-name train_baseline_batch-size-2 \
+    --gpu mps \
+    --epochs 20 \
+    --batch-size 2 \
+    --lr 0.003 \
+    --lr-image-encoder 1e-5 \
+    --lr-prompt-learner 0.001 \
+    --weight-decay 0.0001 \
+    --momentum 0.9 \
+    --milestones 10 15 \
+    --gamma 0.1 \
+    --temporal-layers 1 \
+    --num-segments 16 \
+    --duration 1 \
+    --image-size 224 \
+    --seed 42 \
+    --print-freq 10 \
+    --root-dir ./ \
+    --train-annotation RAER/annotation/train.txt \
+    --test-annotation RAER/annotation/test.txt \
+    --clip-path ViT-B/32 \
+    --bounding-box-face RAER/bounding_box/face.json \
+    --bounding-box-body RAER/bounding_box/body.json \
+    --text-type class_descriptor \
+    --contexts-number 8 \
+    --class-token-position end \
+    --class-specific-contexts True \
+    --load_and_tune_prompt_learner True
