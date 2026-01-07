@@ -4,7 +4,7 @@ import pandas as pd
 from tqdm import tqdm
 
 # --- CONFIGURATION ---
-BASE_PATH = '/content/drive/MyDrive/khoaluan/dataset/DAiSEE'
+BASE_PATH = '/content/drive/MyDrive/khoaluan/Dataset/DAiSEE'
 DATASET_DIR = os.path.join(BASE_PATH, 'DataSet')
 LABELS_DIR = os.path.join(BASE_PATH, 'Labels')
 OUTPUT_DIR = BASE_PATH
