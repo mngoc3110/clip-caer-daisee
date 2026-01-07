@@ -4,7 +4,7 @@ import pandas as pd
 from tqdm import tqdm
 
 # --- CONFIGURATION ---
-BASE_PATH = '/content/drive/MyDrive/khoaluan/Dataset/DAiSEE'
+BASE_PATH = '/content/drive/MyDrive/khoaluan/dataset/DAiSEE'
 DATASET_DIR = os.path.join(BASE_PATH, 'DataSet')
 LABELS_DIR = os.path.join(BASE_PATH, 'Labels')
 OUTPUT_DIR = BASE_PATH
@@ -22,7 +22,7 @@ def regenerate_annotations():
     Reads original DAiSEE CSV files, counts actual frames on disk,
     and generates new .txt annotation files in the required format.
     """
-    print("Starting annotation regeneration process (v2)...")
+    print("Starting annotation regeneration process (v3)...")
 
     if not os.path.isdir(DATASET_DIR):
         print(f"ERROR: Base video directory not found at: {DATASET_DIR}")
@@ -56,8 +56,9 @@ def regenerate_annotations():
                     # We use the 'Engagement' column for the label
                     label = int(row['Engagement'])
                     
-                    # UPDATED: Include the Train/Test/Validation subdirectory in the path
-                    video_dir_path = os.path.join(DATASET_DIR, set_info['dir'], clip_id)
+                    # UPDATED v3: Handle complex nested directory structure
+                    intermediate_dir = clip_id[:6] # First 6 digits of ClipID
+                    video_dir_path = os.path.join(DATASET_DIR, set_info['dir'], intermediate_dir, clip_id, 'frames')
 
                     if os.path.isdir(video_dir_path):
                         # Count all .jpg and .png files
