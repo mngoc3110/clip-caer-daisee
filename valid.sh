@@ -6,12 +6,12 @@ python main.py \
     --gpu mps \
     --exper-name daisee_final_eval \
     --eval-checkpoint "outputs/daisee_engagement_finetune-[01-07]-[16:04]/model_best.pth" \
-    --root-dir DAiSEE_data/DataSet \
+    --root-dir /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/DataSet \
     --train-annotation ../daisee_train.txt \
     --test-annotation ../daisee_test.txt \
     --clip-path ViT-B/32 \
-    --bounding-box-face DAiSEE_data/face_bbox_dummy.json \
-    --bounding-box-body DAiSEE_data/body_bbox_dummy.json \
+    --bounding-box-face /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/face_bbox_dummy.json \
+    --bounding-box-body /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/body_bbox_dummy.json \
     --text-type class_descriptor \
     --contexts-number 8 \
     --class-token-position end \
