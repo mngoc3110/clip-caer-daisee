@@ -16,9 +16,8 @@ SETS = {
 }
 
 # --- SCRIPT LOGIC ---
-
 def regenerate_annotations():
-    print("Starting annotation regeneration process (v5)...")
+    print("Starting annotation regeneration process (v6 - SUPER DEBUG)...")
 
     for set_name, set_info in SETS.items():
         csv_path = os.path.join(LABELS_DIR, set_info['csv'])
@@ -35,27 +34,48 @@ def regenerate_annotations():
         print(f"  - Found {len(df)} records. Generating {output_txt_filename}...")
 
         with open(output_txt_path, 'w') as txt_file:
-            for _, row in tqdm(df.iterrows(), total=df.shape[0], desc=f"  - {set_name}"):
+            for idx, row in tqdm(df.iterrows(), total=df.shape[0], desc=f"  - {set_name}"):
                 try:
                     clip_id = str(row['ClipID'])
                     label = int(row['Engagement'])
                     
-                    # UPDATED v5: Correct path structure - remove 'frames' subdirectory
-                    intermediate_dir = clip_id[:6] # First 6 digits of ClipID
+                    intermediate_dir = clip_id[:6]
                     video_dir_path = os.path.join(DATASET_DIR, set_info['dir'], intermediate_dir, clip_id)
 
-                    if os.path.isdir(video_dir_path):
-                        frames = glob.glob(os.path.join(video_dir_path, '*.*')) # Use *.* to be safe
-                        frame_count = len(frames)
+                    if not os.path.isdir(video_dir_path):
+                        if idx < 5: # Only print debug info for the first 5 rows to avoid spam
+                            print(f"\n[DEBUG] For ClipID '{clip_id}', check FAILED at row {idx}.")
+                            print(f"  - Path being checked: {video_dir_path}")
+                            print(f"  - os.path.isdir() returned: {os.path.isdir(video_dir_path)}")
+                            print(f"  - os.path.exists() returned: {os.path.exists(video_dir_path)}")
+                            
+                            parent_dir = os.path.dirname(video_dir_path)
+                            if os.path.exists(parent_dir):
+                                print(f"  - Parent dir '{parent_dir}' EXISTS.")
+                                try:
+                                    contents = os.listdir(parent_dir)
+                                    print(f"  - Contents of parent (first 10): {contents[:10]}")
+                                    if clip_id in contents:
+                                        print(f"  - STRANGE: ClipID '{clip_id}' IS in the parent's contents list!")
+                                    else:
+                                        print(f"  - As expected, ClipID '{clip_id}' is NOT in the parent's contents list.")
+                                except Exception as e:
+                                    print(f"  - Could not list contents of parent dir. Permissions issue? Error: {e}")
+                            else:
+                                print(f"  - Parent dir '{parent_dir}' does NOT exist either!")
+                        continue
+                    
+                    frames = glob.glob(os.path.join(video_dir_path, '*.*'))
+                    frame_count = len(frames)
 
-                        if frame_count > 0:
-                            txt_file.write(f"{video_dir_path} {frame_count} {label}\n")
+                    if frame_count > 0:
+                        txt_file.write(f"{video_dir_path} {frame_count} {label}\n")
 
                 except KeyError as ke:
                     print(f"\n  - FATAL ERROR: Column not found in CSV: {ke}.")
                     return
 
-        print(f"  - Successfully created {output_txt_path}")
+        print(f"  - Successfully finished processing for {output_txt_path}")
 
     print("\nAnnotation regeneration complete!")
 
