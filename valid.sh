@@ -6,9 +6,9 @@ python main.py \
     --gpu mps \
     --exper-name daisee_final_eval \
     --eval-checkpoint "outputs/daisee_engagement_finetune-[01-07]-[16:04]/model_best.pth" \
-    --root-dir /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/DataSet \
-    --train-annotation ../daisee_train.txt \
-    --test-annotation ../daisee_test.txt \
+    --root-dir /content/drive/MyDrive/khoaluan/Dataset/DAiSEE \
+    --train-annotation daisee_train.txt \
+    --test-annotation daisee_test.txt \
     --clip-path ViT-B/32 \
     --bounding-box-face /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/face_bbox_dummy.json \
     --bounding-box-body /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/body_bbox_dummy.json \

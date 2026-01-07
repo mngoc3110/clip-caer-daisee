@@ -23,9 +23,9 @@ python main.py \
     --image-size 224 \
     --seed 42 \
     --print-freq 10 \
-    --root-dir /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/DataSet \
-    --train-annotation ../daisee_train.txt \
-    --test-annotation ../daisee_val.txt \
+    --root-dir /content/drive/MyDrive/khoaluan/Dataset/DAiSEE \
+    --train-annotation daisee_train.txt \
+    --test-annotation daisee_val.txt \
     --clip-path ViT-B/32 \
     --bounding-box-face /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/face_bbox_dummy.json \
     --bounding-box-body /content/drive/MyDrive/khoaluan/Dataset/DAiSEE/body_bbox_dummy.json \
