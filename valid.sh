@@ -2,14 +2,16 @@
 
 python main.py \
     --mode eval \
+    --dataset DAiSEE \
     --gpu mps \
-    --exper-name test_eval_batch-size2 \
-    --eval-checkpoint outputs/train_baseline_batch-size-2-[12-30]-[22:28]/model_best.pth \
-    --root-dir ./ \
-    --test-annotation RAER/annotation/test.txt \
+    --exper-name daisee_final_eval \
+    --eval-checkpoint "outputs/daisee_engagement_finetune-[01-07]-[16:04]/model_best.pth" \
+    --root-dir DAiSEE_data/DataSet \
+    --train-annotation ../daisee_train.txt \
+    --test-annotation ../daisee_test.txt \
     --clip-path ViT-B/32 \
-    --bounding-box-face RAER/bounding_box/face.json \
-    --bounding-box-body RAER/bounding_box/body.json \
+    --bounding-box-face DAiSEE_data/face_bbox_dummy.json \
+    --bounding-box-body DAiSEE_data/body_bbox_dummy.json \
     --text-type class_descriptor \
     --contexts-number 8 \
     --class-token-position end \

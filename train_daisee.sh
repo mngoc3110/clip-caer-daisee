@@ -25,7 +25,7 @@ python main.py \
     --print-freq 10 \
     --root-dir DAiSEE_data/DataSet \
     --train-annotation ../daisee_train.txt \
-    --test-annotation ../daisee_test.txt \
+    --test-annotation ../daisee_val.txt \
     --clip-path ViT-B/32 \
     --bounding-box-face DAiSEE_data/face_bbox_dummy.json \
     --bounding-box-body DAiSEE_data/body_bbox_dummy.json \
