@@ -158,46 +158,58 @@ class VideoDataset(data.Dataset):
     def get(self, record, indices):
         video_frames_path = glob.glob(os.path.join(record.path, '*'))
         video_frames_path.sort()  
-        random_num = random.random()
+        
         images = list()
         images_face = list()
-        for seg_ind in indices:
-            p = int(seg_ind)
-            for i in range(self.duration):
-                img_path = os.path.join(video_frames_path[p])
-                parent_dir = os.path.dirname(img_path)
-                file_name = os.path.basename(img_path)
+        
+        try:
+            for seg_ind in indices:
+                p = int(seg_ind)
+                for i in range(self.duration):
+                    # This is the line that caused the IndexError originally
+                    img_path = os.path.join(video_frames_path[p]) 
+                    parent_dir = os.path.dirname(img_path)
+                    file_name = os.path.basename(img_path)
 
-                if parent_dir in self.boxs:
-                    if file_name in self.boxs[parent_dir]:
-                        box = self.boxs[parent_dir][file_name]
+                    if parent_dir in self.boxs:
+                        if file_name in self.boxs[parent_dir]:
+                            box = self.boxs[parent_dir][file_name]
+                        else:
+                            box = None
                     else:
                         box = None
-                else:
-                    box = None
 
-                img_pil = Image.open(img_path)
-                img_pil_face = Image.open(img_path)
-                body_box_path = parent_dir
-                body_box = self.body_boxes[body_box_path] if body_box_path in self.body_boxes else None
-                if body_box is not None:
-                    left, upper, right, lower = body_box
-                    img_pil_body = img_pil.crop((left, upper, right, lower))
-                else:
-                    img_pil_body = img_pil
+                    img_pil = Image.open(img_path)
+                    img_pil_face = Image.open(img_path)
+                    body_box_path = parent_dir
+                    body_box = self.body_boxes[body_box_path] if body_box_path in self.body_boxes else None
+                    if body_box is not None:
+                        left, upper, right, lower = body_box
+                        img_pil_body = img_pil.crop((left, upper, right, lower))
+                    else:
+                        img_pil_body = img_pil
 
-                img_cv_body = self._pil2cv(img_pil_body)
-                img_cv_body, r = self._resize_image(img_cv_body, self.image_size, self.image_size)
-                img_pil_body = self._cv2pil(img_cv_body)
-                seg_imgs = [img_pil_body]
-                
+                    img_cv_body = self._pil2cv(img_pil_body)
+                    img_cv_body, r = self._resize_image(img_cv_body, self.image_size, self.image_size)
+                    img_pil_body = self._cv2pil(img_cv_body)
+                    seg_imgs = [img_pil_body]
+                    
 
-                seg_imgs_face = [self._face_detect(img_pil_face,box,margin=20,mode='face')]
+                    seg_imgs_face = [self._face_detect(img_pil_face,box,margin=20,mode='face')]
 
-                images.extend(seg_imgs)
-                images_face.extend(seg_imgs_face)
-                if p < record.num_frames - 1:
-                    p += 1
+                    images.extend(seg_imgs)
+                    images_face.extend(seg_imgs_face)
+                    if p < record.num_frames - 1:
+                        p += 1
+        except IndexError:
+            print("\n\n" + "="*50)
+            print("!!! Caught a Dataloader IndexError !!!")
+            print(f"This likely means a mismatch in frame counts for a video.")
+            print(f"  - Video Path: {record.path}")
+            print(f"  - Frame count from annotation file: {record.num_frames}")
+            print(f"  - Frames actually found on disk by dataloader: {len(video_frames_path)}")
+            print("="*50 + "\n\n")
+            raise # Re-raise the error to stop the program and show the full traceback
 
         images = self.transform(images)
         images = torch.reshape(images, (-1, 3, self.image_size, self.image_size))
